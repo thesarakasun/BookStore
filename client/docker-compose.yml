@@ -1,0 +1,8 @@
+name: BookStore
+
+services:
+  api:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    restart: unless-stopped
