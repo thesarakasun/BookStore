@@ -6,6 +6,9 @@ services:
       context: ./server
       dockerfile: Dockerfile
     restart: unless-stopped
-    env_file: ./server/.env
+    env_file: './server/.env'
+    volumes:
+      - ./server:/app
+      - /app/node_modules
     ports:
       - 3001:3001
