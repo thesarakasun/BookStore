@@ -1,6 +1,15 @@
 name: BookStore
 
 services:
+  mongo:
+    image: mongo:7.0.12
+    ports:
+      - 27017:27017
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - BookStore
+
   api:
     build:
       context: ./server
@@ -10,5 +19,33 @@ services:
     volumes:
       - ./server:/app
       - /app/node_modules
+    networks:
+      - BookStore
     ports:
       - 3001:3001
+    depends_on:
+      - mongo
+
+  frontend:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    env_file: './client/.env'
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    networks:
+      - BookStore
+    ports:
+      - 5173:5173
+    command: npm run dev -- --host
+    depends_on:
+      - api
+
+volumes:
+    mongo_data:
+
+networks:
+  BookStore:
+    driver: bridge
